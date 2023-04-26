@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10", "3.11"]
-        os: [ubuntu-latest, macOS-latest]
+        os: [macOS-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -61,14 +61,6 @@ jobs:
       - name: Build wheel
         run: |
           pdm build --no-sdist
-
-      - name: Make manylinux wheel
-        if: |
-          matrix.os == 'ubuntu-latest'
-        run: |
-          WHL=($(ls dist/*.whl))
-          docker run --rm -e -v $(pwd):/ quay.io/pypa/manylinux2_28_x86_64 auditwheel repair dist/${WHL[0]} -w dist/
-          rm ${WHL[0]}
 
       - name: Upload sdist artifact
         uses: actions/upload-artifact@v3
