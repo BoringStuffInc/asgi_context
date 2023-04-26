@@ -9,8 +9,8 @@ from starlite.testing import TestClient as StarliteTestClient
 from asgi_context import (
     ContextMiddleware,
     ExtractHeadersMiddlewareFactory,
-    RequestContextException,
     HeaderValidationException,
+    RequestContextException,
     http_request_context,
 )
 
