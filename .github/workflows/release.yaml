@@ -86,7 +86,7 @@ jobs:
           path: artifacts
 
       - name: mv wheels and sdist
-        run:
+        run: |
           mkdir dist
           mv ${{steps.download.outputs.download-path}}/dist/* dist/*
 
