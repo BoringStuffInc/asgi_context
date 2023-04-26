@@ -3,8 +3,30 @@
 run-setuptools = true
 
 [tool.pdm.dev-dependencies]
-test = ["pytest>=7.3.1"]
+test = [
+    "pytest>=7.3.1",
+    "fastapi>=0.95.1",
+    "httpx>=0.24.0",
+    "starlite>=1.51.10",
+]
 lint = ["black>=23.3.0", "isort>=5.12.0", "ruff>=0.0.263", "mypy>=1.2.0"]
+
+[tool.pdm.scripts]
+lint = "ruff check asgi_context"
+typecheck = "mypy asgi_context"
+test = "pytest"
+
+"black:run" = "black asgi_context tests"
+"black:check" = "black asgi_context tests --check"
+
+"isort:run" = "isort asgi_context tests"
+"isort:check" = "isort asgi_context tests --check-only"
+
+format = { composite = ["black:run", "isort:run"] }
+"format:check" = { composite = ["black:check", "isort:check"] }
+
+"test:all" = { composite = ["test", "lint", "typecheck", "format:check"] }
+
 
 [project]
 name = "asgi_context"
@@ -12,7 +34,7 @@ version = "0.1.0"
 description = "Simple request context for ASGI compatible applications"
 authors = [{ name = "Marcin Paliwoda", email = "paliwoda.marcin@zoho.com" }]
 dependencies = []
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT" }
 
@@ -20,12 +42,29 @@ license = { text = "MIT" }
 requires = ["pdm-backend", "mypy>=1.2.0"]
 build-backend = "pdm.backend"
 
+[tool.black]
+line-length = 120
+target-version = ["py310"]
+exclude = '''
+(
+  /(
+    | \.git
+    | .venv
+    | .mypy_cache
+    | .rope_project
+    | __pycache__
+    | build
+    | dist
+  )/
+)
+'''
+
 [tool.isort]
 line_length = 120
 profile = "black"
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.10"
 strict_optional = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
