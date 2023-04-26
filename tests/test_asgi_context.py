@@ -8,7 +8,7 @@ from starlite.testing import TestClient as StarliteTestClient
 
 from asgi_context import (
     ContextMiddleware,
-    ExtractHeadersMiddlewareFactory,
+    HeadersExtractorMiddlewareFactory,
     HeaderValidationException,
     RequestContextException,
     http_request_context,
@@ -17,7 +17,7 @@ from asgi_context import (
 
 class TestFastAPI:
     def test_fastapi_correct_setup(self):
-        tracing_middleware = ExtractHeadersMiddlewareFactory.build("Tracing", header_names=["X-Trace-ID"])
+        tracing_middleware = HeadersExtractorMiddlewareFactory.build("Tracing", header_names=["X-Trace-ID"])
 
         app = FastAPI()
         app.add_middleware(tracing_middleware)
@@ -33,7 +33,7 @@ class TestFastAPI:
             assert response.json() == {"X-Trace-ID": "123"}
 
     def test_fastapi_wrong_setup(self):
-        tracing_middleware = ExtractHeadersMiddlewareFactory.build("Tracing", header_names=["X-Trace-ID"])
+        tracing_middleware = HeadersExtractorMiddlewareFactory.build("Tracing", header_names=["X-Trace-ID"])
 
         app = FastAPI()
         app.add_middleware(ContextMiddleware)
@@ -55,7 +55,7 @@ class TestFastAPI:
             except ValueError:
                 return False
 
-        tracing_middleware = ExtractHeadersMiddlewareFactory.build(
+        tracing_middleware = HeadersExtractorMiddlewareFactory.build(
             "Tracing", header_names=["X-Trace-ID"], validators={"X-Trace-ID": uuid_validator}
         )
 
@@ -84,7 +84,7 @@ class TestStarlite:
             route_handlers=[index],
             middleware=[
                 ContextMiddleware,
-                ExtractHeadersMiddlewareFactory.build("Tracing", header_names=["X-Trace-ID"]),
+                HeadersExtractorMiddlewareFactory.build("Tracing", header_names=["X-Trace-ID"]),
             ],
         )
 
@@ -101,7 +101,7 @@ class TestStarlite:
         app = Starlite(
             route_handlers=[index],
             middleware=[
-                ExtractHeadersMiddlewareFactory.build("Tracing", header_names=["X-Trace-ID"]),
+                HeadersExtractorMiddlewareFactory.build("Tracing", header_names=["X-Trace-ID"]),
             ],
         )
 

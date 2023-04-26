@@ -69,7 +69,7 @@ class ContextMiddleware:
                 await self.app(scope, receive, send)
 
 
-class AbstractHeadersExtractorMiddlewaee(ABC):
+class AbstractHeadersExtractorMiddleware(ABC):
     __slots__ = ("app",)
 
     def __init__(self, app: ASGIApp) -> None:
@@ -111,7 +111,7 @@ class HeadersExtractorMiddlewareFactory:
         base_name: str,
         header_names: Iterable[HeaderName],
         validators: dict[HeaderName, Validator] | None = None,
-    ) -> type[AbstractExtractHeadersMiddleware]:
+    ) -> type[AbstractHeadersExtractorMiddleware]:
         name_parts = base_name.lower().replace(" ", "_").split("_")
         name = "".join(name_part.capitalize() for name_part in name_parts)
         header_names_property = lambda self: tuple(header_names)
@@ -119,7 +119,7 @@ class HeadersExtractorMiddlewareFactory:
 
         return type(
             f"{name}HeadersExtractorMiddleware",
-            (AbstractExtractHeadersMiddleware,),
+            (AbstractHeadersExtractorMiddleware,),
             {
                 "header_names": cached_property(header_names_property),
                 "validators": cached_property(validators_property),
@@ -133,7 +133,7 @@ http_request_context = Context()
 __all__ = (
     "http_request_context",
     "ContextMiddleware",
-    "ExtractHeadersMiddlewareFactory",
+    "HeadersExtractorMiddlewareFactory",
     "RequestContextException",
     "HeaderValidationException",
 )
