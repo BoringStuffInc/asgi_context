@@ -1,4 +1,3 @@
-[tool.pdm]
 [tool.pdm.build]
 run-setuptools = true
 
@@ -9,55 +8,48 @@ test = [
     "httpx>=0.24.0",
     "starlite>=1.51.10",
 ]
-lint = ["black>=23.3.0", "isort>=5.12.0", "ruff>=0.0.263", "mypy>=1.2.0"]
+lint = [
+    "black>=23.3.0",
+    "isort>=5.12.0",
+    "ruff>=0.0.263",
+    "mypy>=1.2.0",
+]
 
 [tool.pdm.scripts]
 lint = "ruff check asgi_context"
 typecheck = "mypy asgi_context"
 test = "pytest"
-
 "black:run" = "black asgi_context tests"
 "black:check" = "black asgi_context tests --check"
-
 "isort:run" = "isort asgi_context tests"
 "isort:check" = "isort asgi_context tests --check-only"
 
-format = { composite = ["black:run", "isort:run"] }
-"format:check" = { composite = ["black:check", "isort:check"] }
+[tool.pdm.scripts.format]
+composite = [
+    "black:run",
+    "isort:run",
+]
 
-"test:all" = { composite = ["test", "lint", "typecheck", "format:check"] }
+[tool.pdm.scripts."format:check"]
+composite = [
+    "black:check",
+    "isort:check",
+]
 
-
-[project]
-name = "asgi_context"
-version = "0.1.0"
-description = "Simple request context for ASGI compatible applications"
-authors = [{ name = "Marcin Paliwoda", email = "paliwoda.marcin@zoho.com" }]
-dependencies = []
-requires-python = ">=3.10"
-readme = "README.md"
-license = { text = "MIT" }
-
-[build-system]
-requires = ["pdm-backend", "mypy>=1.2.0"]
-build-backend = "pdm.backend"
+[tool.pdm.scripts."test:all"]
+composite = [
+    "test",
+    "lint",
+    "typecheck",
+    "format:check",
+]
 
 [tool.black]
 line-length = 120
-target-version = ["py310"]
-exclude = '''
-(
-  /(
-    | \.git
-    | .venv
-    | .mypy_cache
-    | .rope_project
-    | __pycache__
-    | build
-    | dist
-  )/
-)
-'''
+target-version = [
+    "py310",
+]
+exclude = "(\n  /(\n    | \\.git\n    | .venv\n    | .mypy_cache\n    | .rope_project\n    | __pycache__\n    | build\n    | dist\n  )/\n)\n"
 
 [tool.isort]
 line_length = 120
@@ -75,6 +67,32 @@ show_error_codes = true
 testpaths = "tests"
 
 [tool.ruff]
-select = ["F", "B"]
+select = [
+    "F",
+    "B",
+]
 line-length = 120
-unfixable = ["B"]
+unfixable = [
+    "B",
+]
+
+[project]
+name = "asgi_context"
+version = "0.1.1"
+description = "Simple request context for ASGI compatible applications"
+authors = [
+    { name = "Marcin Paliwoda", email = "paliwoda.marcin@zoho.com" },
+]
+dependencies = []
+requires-python = ">=3.10"
+readme = "README.md"
+
+[project.license]
+text = "MIT"
+
+[build-system]
+requires = [
+    "pdm-backend",
+    "mypy>=1.2.0",
+]
+build-backend = "pdm.backend"
