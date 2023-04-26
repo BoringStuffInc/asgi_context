@@ -69,7 +69,7 @@ class ContextMiddleware:
                 await self.app(scope, receive, send)
 
 
-class AbstractExtractHeadersMiddleware(ABC):
+class AbstractHeadersExtractorMiddlewaee(ABC):
     __slots__ = ("app",)
 
     def __init__(self, app: ASGIApp) -> None:
@@ -105,7 +105,7 @@ class AbstractExtractHeadersMiddleware(ABC):
             await self.app(scope, receive, send)
 
 
-class ExtractHeadersMiddlewareFactory:
+class HeadersExtractorMiddlewareFactory:
     @staticmethod
     def build(
         base_name: str,
@@ -118,7 +118,7 @@ class ExtractHeadersMiddlewareFactory:
         validators_property = lambda self: validators or dict()
 
         return type(
-            f"{name}ExtractHeadersMiddleware",
+            f"{name}HeadersExtractorMiddleware",
             (AbstractExtractHeadersMiddleware,),
             {
                 "header_names": cached_property(header_names_property),
