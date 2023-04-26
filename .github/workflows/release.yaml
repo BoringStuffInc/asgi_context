@@ -85,6 +85,11 @@ jobs:
         with:
           path: artifacts
 
+      - name: mv wheels and sdist
+        run:
+          mkdir dist
+          mv ${{steps.download.outputs.download-path}}/dist/* dist/*
+
       - name: Set version env var
         run: |
           echo "VERSION=$(cat ${{steps.download.outputs.download-path}}/version/version.txt | tr -d '\n')" >> "$GITHUB_ENV"
@@ -98,7 +103,7 @@ jobs:
 
       - name: Publish
         run: |
-          pdm publish
+          pdm publish --no-build
         env:
           PDM_PUBLISH_USERNAME: __token__
           PDM_PUBLISH_PASSWORD: ${{ secrets.PYPI_TOKEN }}
