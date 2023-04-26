@@ -65,7 +65,8 @@ jobs:
       - name: Upload sdist artifact
         uses: actions/upload-artifact@v3
         with:
-          path: "dist"
+          name: dist
+          path: "dist/*"
 
   create_gh_release_and_publish_to_pypi:
     runs-on: ubuntu-latest
@@ -88,7 +89,7 @@ jobs:
       - name: mv wheels and sdist
         run: |
           mkdir dist
-          mv ${{steps.download.outputs.download-path}}/dist/* dist/*
+          mv ${{steps.download.outputs.download-path}}/dist/* dist
 
       - name: Set version env var
         run: |
