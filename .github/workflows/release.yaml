@@ -37,6 +37,7 @@ jobs:
       - name: Upload sdist artifact
         uses: actions/upload-artifact@v3
         with:
+          name: dist
           path: "dist"
 
   build_wheels:
@@ -79,24 +80,21 @@ jobs:
           python-version: "3.10"
 
       - name: Download artifacts
+        id: download
         uses: actions/download-artifact@v3
-
-      - name: mv to dist
-        run: |
-          mkdir dist/
-          mv ${{steps.download.outputs.download-path}}/*.whl dist/
-          mv ${{steps.download.outputs.download-path}}/*.tar.gz dist/
+        with:
+          path: artifacts
 
       - name: Set version env var
         run: |
-          echo "VERSION=$(cat version.txt | tr -d '\n')" >> "$GITHUB_ENV"
+          echo "VERSION=$(cat ${{steps.download.outputs.download-path}}/version/version.txt | tr -d '\n')" >> "$GITHUB_ENV"
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION }}
           files: |
-            dist/*
+            ${{steps.download.outputs.download-path}}/dist/*
 
       - name: Publish
         run: |
