@@ -10,6 +10,7 @@ from asgi_context import (
     ContextMiddleware,
     ExtractHeadersMiddlewareFactory,
     RequestContextException,
+    HeaderValidationException,
     http_request_context,
 )
 
@@ -59,16 +60,18 @@ class TestFastAPI:
         )
 
         app = FastAPI()
-        app.add_middleware(ContextMiddleware)
         app.add_middleware(tracing_middleware)
+        app.add_middleware(ContextMiddleware)
 
         @app.get("/")
         async def index():
             return {"X-Trace-ID": http_request_context["X-Trace-ID"]}
 
         with FastAPITestClient(app) as client:
-            with pytest.raises(RequestContextException):
-                client.get("/", headers={"X-Trace-ID": "00703a09-a666-411e-940d-768489c69302"})
+            client.get("/", headers={"X-Trace-ID": "00703a09-a666-411e-940d-768489c69302"})
+
+            with pytest.raises(HeaderValidationException):
+                client.get("/", headers={"X-Trace-ID": "hello"})
 
 
 class TestStarlite:
