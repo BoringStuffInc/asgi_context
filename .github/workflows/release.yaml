@@ -121,10 +121,10 @@ jobs:
           tag_name: ${{ env.VERSION }}
           files: |
             ${{steps.download.outputs.download-path}}/dist/*
-      #
-      # - name: Publish
-      #   run: |
-      #     pdm publish --no-build
-      #   env:
-      #     PDM_PUBLISH_USERNAME: __token__
-      #     PDM_PUBLISH_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+
+      - name: Publish
+        run: |
+          pdm publish --no-build
+        env:
+          PDM_PUBLISH_USERNAME: __token__
+          PDM_PUBLISH_PASSWORD: ${{ secrets.PYPI_TOKEN }}
