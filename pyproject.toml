@@ -78,7 +78,7 @@ unfixable = [
 
 [project]
 name = "asgi_context"
-version = "0.1.1"
+version = "0.2.0"
 description = "Simple request context for ASGI compatible applications"
 authors = [
     { name = "Marcin Paliwoda", email = "paliwoda.marcin@zoho.com" },

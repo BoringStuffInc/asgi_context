@@ -1,4 +1,5 @@
 import uuid
+from http import HTTPStatus
 
 import pytest
 from fastapi import FastAPI
@@ -9,8 +10,8 @@ from starlite.testing import TestClient as StarliteTestClient
 from asgi_context import (
     ContextMiddleware,
     HeadersExtractorMiddlewareFactory,
-    HeaderValidationException,
     RequestContextException,
+    ValidationConfig,
     http_request_context,
 )
 
@@ -56,7 +57,13 @@ class TestFastAPI:
                 return False
 
         tracing_middleware = HeadersExtractorMiddlewareFactory.build(
-            "Tracing", header_names=["X-Trace-ID"], validators={"X-Trace-ID": uuid_validator}
+            "Tracing",
+            header_names=["X-Trace-ID"],
+            validation_config=ValidationConfig(
+                err_on_missing=HTTPStatus.UNPROCESSABLE_ENTITY,
+                err_on_invalid=HTTPStatus.BAD_REQUEST,
+                validators={"X-Trace-ID": uuid_validator},
+            ),
         )
 
         app = FastAPI()
@@ -68,10 +75,16 @@ class TestFastAPI:
             return {"X-Trace-ID": http_request_context["X-Trace-ID"]}
 
         with FastAPITestClient(app) as client:
-            client.get("/", headers={"X-Trace-ID": "00703a09-a666-411e-940d-768489c69302"})
+            ok_response = client.get("/", headers={"X-Trace-ID": "00703a09-a666-411e-940d-768489c69302"})
+            assert ok_response.status_code == 200
 
-            with pytest.raises(HeaderValidationException):
-                client.get("/", headers={"X-Trace-ID": "hello"})
+            bad_response = client.get("/", headers={"X-Trace-ID": "hello"})
+            assert bad_response.status_code == 400
+            assert bad_response.json() == {"error": "Invalid value for header: X-Trace-ID"}
+
+            bad_response = client.get("/", headers={})
+            assert bad_response.status_code == 422
+            assert bad_response.json() == {"error": "Missing header: X-Trace-ID"}
 
 
 class TestStarlite:
