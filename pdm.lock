@@ -329,7 +329,7 @@ summary = "Backported and Experimental Type Hints for Python 3.7+"
 [metadata]
 lock_version = "4.2"
 groups = ["default", "lint", "test"]
-content_hash = "sha256:e1bbd50a314dccaa1b77edcc272be9b0f24f5cb6db820ca699c51af934774dd6"
+content_hash = "sha256:f9a29b3237dfd94e04cbdd85b8712ff9276f928d2aa1e9db70ec4889e2413a0a"
 
 [metadata.files]
 "anyio 3.6.2" = [

@@ -83,7 +83,9 @@ description = "Simple request context for ASGI compatible applications"
 authors = [
     { name = "Marcin Paliwoda", email = "paliwoda.marcin@zoho.com" },
 ]
-dependencies = []
+dependencies = [
+    "mypy-extensions>=1.0.0",
+]
 requires-python = ">=3.10"
 readme = "README.md"
 

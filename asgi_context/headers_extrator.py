@@ -6,6 +6,8 @@ from functools import cached_property
 from http import HTTPStatus
 from typing import Literal, TypeAlias
 
+from mypy_extensions import mypyc_attr
+
 from asgi_context.context import http_request_context
 from asgi_context.protocol import ASGIApp, HeaderName, HeaderValue, Receive, Scope, Send
 
@@ -22,14 +24,16 @@ class ValidationConfig:
     validators: dict[HeaderName, Validator] = field(default_factory=dict)
 
 
+@mypyc_attr(allow_interpreted_subclasses=True)
 class AbstractHeadersExtractorMiddleware(ABC):
-    __slots__ = ("app",)
+    __slots__ = ("app", "__dict__")
 
     ON_MISSING: ErrOnMissing
     ON_INVALID: ErrOnInvalid
 
     def __init__(self, app: ASGIApp) -> None:
         self.app = app
+        self.__dict__ = {}
 
     @property
     @abstractmethod
@@ -98,7 +102,7 @@ class HeadersExtractorMiddlewareFactory:
     def build(
         base_name: str,
         header_names: Iterable[HeaderName],
-        validation_config: ValidationConfig = ValidationConfig(),
+        validation_config: ValidationConfig = ValidationConfig(),  # noqa: B008
     ) -> type[AbstractHeadersExtractorMiddleware]:
         header_names_property = lambda self: tuple(header_names)
         validation_config_property = lambda self: validation_config
