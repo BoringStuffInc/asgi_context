@@ -120,7 +120,7 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           files: |
-            ${{steps.download.outputs.download-path}}/dist/*
+            dist/*
 
       - name: Publish
         run: |
