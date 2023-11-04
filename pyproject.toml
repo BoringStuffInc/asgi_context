@@ -14,6 +14,8 @@ lint = [
     "ruff>=0.0.263",
     "mypy>=1.2.0",
 ]
+dev = [
+]
 
 [tool.pdm.scripts]
 lint = "ruff check asgi_context"
@@ -78,10 +80,10 @@ unfixable = [
 
 [project]
 name = "asgi_context"
-version = "0.2.0"
+version = "0.2.1"
 description = "Simple request context for ASGI compatible applications"
 authors = [
-    { name = "Marcin Paliwoda", email = "paliwoda.marcin@zoho.com" },
+    { name = "Marcin Paliwoda", email = "boringstuffinc@gmail.com" },
 ]
 dependencies = [
     "mypy-extensions>=1.0.0",
@@ -95,6 +97,7 @@ text = "MIT"
 [build-system]
 requires = [
     "pdm-backend",
+    "setuptools",
     "mypy>=1.2.0",
 ]
 build-backend = "pdm.backend"
